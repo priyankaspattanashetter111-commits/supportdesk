@@ -1,0 +1,63 @@
+@base = http://localhost:8081
+@password = LearnJava!21
+
+ ### Health (public)
+ GET {{base}}/actuator/health
+
+ ### Create ticket
+ POST {{base}}/api/tickets
+ Authorization: Basic alice {{password}}
+ Content-Type: application/json
+
+ {"title":"VPN connection fails","description":"Cannot connect from home","priority":"HIGH"}
+
+ ### Agent queue
+ GET {{base}}/api/tickets?status=OPEN&page=0&size=20
+ Authorization: Basic agent {{password}}
+
+ ### Ticket detail (replace 1 with the returned ticket ID throughout)
+ GET {{base}}/api/tickets/1
+ Authorization: Basic alice {{password}}
+
+ ### Claim
+ POST {{base}}/api/tickets/1/claim
+ Authorization: Basic agent {{password}}
+ Content-Type: application/json
+
+ {}
+
+ ### Start work
+ POST {{base}}/api/tickets/1/status
+ Authorization: Basic agent {{password}}
+ Content-Type: application/json
+
+ {"status":"IN_PROGRESS"}
+
+ ### Comment
+ POST {{base}}/api/tickets/1/comments
+ Authorization: Basic agent {{password}}
+ Content-Type: application/json
+
+ {"text":"Investigating the connection logs."}
+
+ ### Resolve
+ POST {{base}}/api/tickets/1/status
+ Authorization: Basic agent {{password}}
+ Content-Type: application/json
+
+ {"status":"RESOLVED"}
+
+ ### Requester closes
+ POST {{base}}/api/tickets/1/status
+ Authorization: Basic alice {{password}}
+ Content-Type: application/json
+
+ {"status":"CLOSED"}
+
+ ### History
+ GET {{base}}/api/tickets/1/events
+ Authorization: Basic alice {{password}}
+
+ ### SLA report
+ GET {{base}}/api/reports/sla
+ Authorization: Basic agent {{password}}
